@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Stock Forecast Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.4.0/dist/axios.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/babel-standalone@7.22.10/babel.min.js"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div id="root" class="container mx-auto p-4"></div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const App = () => {
+            const [data, setData] = useState(null);
+            const [error, setError] = useState(null);
+
+            const fetchData = async () => {
+                try {
+                    // Replace with your Render URL after deployment
+                    const response = await axios.get('/forecasts');
+                    setData(response.data);
+                    setError(null);
+                } catch (err) {
+                    setError('Failed to fetch data: ' + err.message);
+                }
+            };
+
+            useEffect(() => {
+                fetchData();
+                const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
+                return () => clearInterval(interval);
+            }, []);
+
+            useEffect(() => {
+                if (data) {
+                    const historical = {
+                        x: data.historical.dates,
+                        y: data.historical.values,
+                        type: 'scatter',
+                        mode: 'lines+markers',
+                        name: 'Historical',
+                        line: { color: 'black' }
+                    };
+                    const stl = {
+                        x: data.forecasts.dates,
+                        y: data.forecasts.stl,
+                        type: 'scatter',
+                        mode: 'lines',
+                        name: 'STL',
+                        line: { dash: 'dash', color: 'blue' }
+                    };
+                    const arima = {
+                        x: data.forecasts.dates,
+                        y: data.forecasts.arima,
+                        type: 'scatter',
+                        mode: 'lines',
+                        name: 'ARIMA',
+                        line: { dash: 'dash', color: 'green' }
+                    };
+                    const xgboost = {
+                        x: data.forecasts.dates,
+                        y: data.forecasts.xgboost,
+                        type: 'scatter',
+                        mode: 'lines',
+                        name: 'XGBoost',
+                        line: { dash: 'dash', color: 'orange' }
+                    };
+                    const tensorflow = {
+                        x: data.forecasts.dates,
+                        y: data.forecasts.tensorflow,
+                        type: 'scatter',
+                        mode: 'lines',
+                        name: 'TensorFlow',
+                        line: { dash: 'dash', color: 'purple' }
+                    };
+                    const ensemble = {
+                        x: data.forecasts.dates,
+                        y: data.forecasts.ensemble,
+                        type: 'scatter',
+                        mode: 'lines',
+                        name: 'Ensemble',
+                        line: { dash: 'dash', color: 'red' }
+                    };
+
+                    const layout = {
+                        title: 'Blood Stock Level Forecast (mL)',
+                        xaxis: { title: 'Date' },
+                        yaxis: { title: 'Stock Level (mL)' },
+                        margin: { t: 50, b: 100, l: 50, r: 50 }
+                    };
+
+                    Plotly.newPlot('chart', [historical, stl, arima, xgboost, tensorflow, ensemble], layout);
+                }
+            }, [data]);
+
+            return (
+                <div className="bg-white p-6 rounded-lg shadow-lg">
+                    <h1 className="text-2xl font-bold mb-4 text-center">Blood Stock Forecast Dashboard</h1>
+                    {error && <p className="text-red-500 text-center">{error}</p>}
+                    <div id="chart" className="w-full h-[500px]"></div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
