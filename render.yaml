@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: blood-forecast-app
+    env: python
+    plan: free
+    branch: main
+    repo: https://github.com/yourusername/blood-forecast-app
+    buildCommand: |
+      apt-get update && apt-get install -y build-essential libatlas-base-dev gfortran
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: gunicorn app:app
