@@ -29,8 +29,8 @@ try:
         'shelf_life_days': [176, 49, -50, -146, -12, 42, 42, 166, 298, 89, 85, -138, 34, 57, 169, 234, 256],
         'will_expire_early': [0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]
     })
-    data.to_csv("blood_stock_data.csv", index=False)
-    data = pd.read_csv("blood_stock_data.csv", parse_dates=['donation_date'])
+    data.to_csv("cleaned_blood_data..csv", index=False)
+    data = pd.read_csv("cleaned_blood_data..csv", parse_dates=['donation_date'])
 except Exception as e:
     logging.error(f"Error loading data: {e}. Ensure CSV file has 'donation_date' and 'collection_volume_ml' columns.")
     sys.exit(1)
