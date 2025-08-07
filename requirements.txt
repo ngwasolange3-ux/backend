@@ -4,4 +4,5 @@ statsmodels
 pmdarima 
 xgboost 
 tensorflow 
-flask gunicorn
+flask 
+gunicorn
