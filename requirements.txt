@@ -1,1 +1,7 @@
-pandas numpy statsmodels pmdarima xgboost tensorflow flask gunicorn
+pandas 
+numpy 
+statsmodels 
+pmdarima 
+xgboost 
+tensorflow 
+flask gunicorn
